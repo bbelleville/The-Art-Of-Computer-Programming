@@ -1,0 +1,64 @@
+* initializations
+N	EQU 3
+B       EQU 10
+IN	EQU 8
+OUT	EQU 9
+OUTCNT	NOP
+
+START	ENT1 0
+	ENT2 0
+	ENT3 0
+	ENT4 BFR1
+	ENT5 BFR1
+	ENT6 0
+	ENTX 0
+
+* CHKIN: sees if input device is ready, if it is ready, incriment # of red buffers and increment # of blocks read. See if available green buffers, 
+* 	if there are start input operation, incriment NEXTG
+CHKIN	JBUS CHKOUT(IN)
+	J2Z 1F 	* if input has not just completed rI2 will be set to zero, so no incrementing needs to be done
+	ENT2 0
+	INC6 1
+	INC1 1	*rI2 = 0, rI6++, r1++ 
+1H	CMP6 =N=
+        JE CHKOUT
+        CMP1 =B=
+	JE CHKOUT
+	ENT2 0,4
+	LD4 -1,4
+	STX OUTCNT
+	ENTX 0,1
+	IN 0,2(IN)
+	LDX OUTCNT
+
+
+
+* CHKOUT: sees if output device is ready, if it is ready, decriment # of red buffers, see if there are available red buffers, 
+*	if there are start output operation, incriment NEXTR
+CHKOUT	JBUS CHKIN(OUT)
+	J3Z 1F
+	ENT3 0
+	DEC6 1
+	INCX 1
+1H	J6Z 2F
+	ENT3 0,5
+	LD5 -1,5
+	OUT 0,3(OUT)
+2H	CMP1 =B=
+	JL CHKIN
+        J6NZ CHKOUT
+9H	HLT
+        END START
+
+
+DEBUG	HLT
+
+
+* Buffer allocation	
+REF2	CON *+102
+BFR1	ORIG *+100
+REF3	CON *+102
+BFR2	ORIG *+100
+REF1	CON BFR1
+BFR3	ORIG *+100
+

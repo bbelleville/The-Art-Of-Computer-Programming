@@ -1,0 +1,18 @@
+* initializations
+N	EQU 3
+B       EQU 10
+IN	EQU 8
+OUT	EQU 11
+
+START	JBUS *(IN)
+	IN BFR(IN)
+	JBUS *(OUT)
+	OUT BFR(OUT)
+	INCX 1
+	CMPX =B=
+	JL START
+	HLT
+	END START
+		
+
+BFR	ORIG *+100

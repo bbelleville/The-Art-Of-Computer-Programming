@@ -1,0 +1,8 @@
+TERM    EQU    18          
+        ORIG   1000        
+START   OUT    MSG(TERM)   
+        HLT                
+MSG     CON    "HELLO"
+        CON    " WORL"
+        CON    "D    "
+        END    START
